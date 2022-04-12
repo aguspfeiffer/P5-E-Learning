@@ -156,8 +156,9 @@
     <gender>Feminine</gender>
     <label>Student-Trail</label>
     <nameField>
+        <displayFormat>ST-{0000}</displayFormat>
         <label>Student-Trail name</label>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Students-Trails</pluralLabel>
     <searchLayouts></searchLayouts>

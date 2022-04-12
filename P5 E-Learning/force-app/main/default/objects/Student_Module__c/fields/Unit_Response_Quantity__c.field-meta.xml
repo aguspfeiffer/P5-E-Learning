@@ -4,9 +4,9 @@
     <externalId>false</externalId>
     <label>Unit Response Quantity</label>
     <summaryFilterItems>
-        <field>Unit_Response__c.Status__c</field>
+        <field>Unit_Response__c.IsCompleted__c</field>
         <operation>equals</operation>
-        <value>Completed</value>
+        <value>True</value>
     </summaryFilterItems>
     <summaryForeignKey>Unit_Response__c.Student_Module__c</summaryForeignKey>
     <summaryOperation>count</summaryOperation>

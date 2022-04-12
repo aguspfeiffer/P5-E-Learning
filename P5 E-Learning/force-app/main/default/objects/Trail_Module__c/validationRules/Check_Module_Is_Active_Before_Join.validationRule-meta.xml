@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Check_Module_Is_Active_Before_Join</fullName>
+    <active>true</active>
+    <errorConditionFormula>IF(Module__r.Active__c, false, true)</errorConditionFormula>
+    <errorMessage>The module must be Actived!</errorMessage>
+</ValidationRule>

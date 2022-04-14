@@ -86,7 +86,7 @@ public class UnitService{
 
     public TrailWrapper getTrailWrapper(Id trailId){
             //New Instance of TrailWrapper
-            TrailWrapper trailWrap = new TrailWrapper([SELECT Name, Description__c FROM Trail__c WHERE Id =: trailId], getModules(trailId), getModuleIdsCompleted(trailId), getUnitIdsCompleted(trailId));
+            TrailWrapper trailWrap = new TrailWrapper([SELECT Name, Description__c, Trail_Time__c, Trail_Score__c FROM Trail__c WHERE Id =: trailId], getModules(trailId), getModuleIdsCompleted(trailId), getUnitIdsCompleted(trailId));
     
             return trailWrap;
         }

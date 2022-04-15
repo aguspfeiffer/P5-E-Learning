@@ -1,9 +1,35 @@
-<template>
+<!-- <template>
     <h1>TRAIL VIEW</h1>
     <p>RecordId : {recordId}</p>
     <p>Name : {name} </p>
     <p>Description : {description} </p>
     <p>TrailTime : {trailTime} </p>
     <p>TrailScore : {trailScore} </p>
+
+    <template if:true = {progress}>
+        <p>TrailProgres {progress}%</p>
+        <lightning-progress-bar value={progress} size="large" variant="circular"></lightning-progress-bar>
+    </template>
+
+</template> -->
+<template>
+    <lightning-card>
+        <h3 slot="title">
+            <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>
+            {name}
+        </h3>
+        <p class="slds-p-horizontal_small">Description: {description}</p>
+        <p class="slds-p-horizontal_small">Estimated Time: {trailTime}</p>
+        <p class="slds-p-horizontal_small">Trail Points: {trailScore}</p>
+        <p class="slds-p-horizontal_small">
+            <template if:true={progress}>
+                <p>Progress {progress}%</p>
+                <lightning-progress-bar value={progress} size="large" variant="circular"></lightning-progress-bar>
+            </template>
+            <template if:false={progress}>
+                <p>Progress: Trail Completed!</p>
+            </template>
+        </p>        
+    </lightning-card>
 
 </template>

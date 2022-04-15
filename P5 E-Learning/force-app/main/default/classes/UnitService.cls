@@ -77,7 +77,7 @@ public class UnitService{
             this.modules = modules;
             this.passedModuleIds = passedModuleIds;
             this.passedUnitIds = passedUnitIds;
-            this.progressTrail = (Double) passedModuleIds.size() /  (Double) modules.size();
+            this.progressTrail = (Double) passedModuleIds.size()*100 /  (Double) modules.size();
         }
     }
 

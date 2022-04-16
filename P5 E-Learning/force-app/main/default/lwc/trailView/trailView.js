@@ -35,8 +35,15 @@ export default class TrailView extends LightningElement {
     trailProgress;  
 
    get progress(){
-    if(this.trailProgress.data > 0 && this.trailProgress.data < 100){
-        return this.trailProgress.data;
-    }
+    if(this.trailProgress.data > 0 && this.trailProgress.data < 100)
+        return this.trailProgress.data;   
    }
+
+   get moduleStarted() {
+    if(this.trailProgress.data==0){
+        return false;
+        } else if(this.trailProgress.data==100){
+        return true;
+        }
+    }
 }   

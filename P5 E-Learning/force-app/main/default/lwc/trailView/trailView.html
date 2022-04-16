@@ -15,21 +15,25 @@
 <template>
     <lightning-card>
         <h3 slot="title">
-            <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>
-            {name}
+            <lightning-icon icon-name="standard:knowledge" size="small"></lightning-icon>
+             {name}
         </h3>
         <p class="slds-p-horizontal_small">Description: {description}</p>
-        <p class="slds-p-horizontal_small">Estimated Time: {trailTime}</p>
+        <p class="slds-p-horizontal_small">Estimated Time: {trailTime} minutes</p>
         <p class="slds-p-horizontal_small">Trail Points: {trailScore}</p>
-        <p class="slds-p-horizontal_small">
+        <div slot="footer">
             <template if:true={progress}>
-                <p>Progress {progress}%</p>
+                <p>Trail Progress {progress}%</p>
                 <lightning-progress-bar value={progress} size="large" variant="circular"></lightning-progress-bar>
             </template>
             <template if:false={progress}>
-                <p>Progress: Trail Completed!</p>
+                <template if:false={moduleStarted}>
+                    <p class="slds-p-horizontal_small">Trail Not Started!</p>
+                </template>
+                <template if:true={moduleStarted}>
+                    <p class="slds-p-horizontal_small">Trail Completed!</p>
+                </template>
             </template>
-        </p>        
+       </div>                 
     </lightning-card>
-
 </template>

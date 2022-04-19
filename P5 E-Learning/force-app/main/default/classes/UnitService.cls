@@ -63,12 +63,15 @@ public class UnitService{
     //>>>>>>>>>>>>>>>>>> CLASS TRAIL WRAPPER  !!<<<<<<<<<<<<<<<<<<<
     public class TrailWrapper{
         //Configuration
+        @AuraEnabled
         public Trail__c trail;
+        @AuraEnabled
         public List<Module__c> modules;
         
         //Transactional
         public Set<Id> passedModuleIds;
         public Set<Id> passedUnitIds;
+        @AuraEnabled
         public Double progressTrail;
 
          //CONSTRUCTOR!

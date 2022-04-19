@@ -1,38 +1,25 @@
-<!-- <template>
-    <h1>TRAIL VIEW</h1>
-    <p>RecordId : {recordId}</p>
-    <p>Name : {name} </p>
-    <p>Description : {description} </p>
-    <p>TrailTime : {trailTime} </p>
-    <p>TrailScore : {trailScore} </p>
-
-    <template if:true = {progress}>
-        <p>TrailProgres {progress}%</p>
-        <lightning-progress-bar value={progress} size="large" variant="circular"></lightning-progress-bar>
-    </template>
-
-</template> -->
 <template>
     <lightning-card>
         <h3 slot="title">
             <lightning-icon icon-name="standard:knowledge" size="small"></lightning-icon>
-             {name}
+             {trailName}
         </h3>
-        <p class="slds-p-horizontal_small">Description: {description}</p>
+        <p class="slds-p-horizontal_small">Description: {trailDescription}</p>
         <p class="slds-p-horizontal_small">Estimated Time: {trailTime} minutes</p>
         <p class="slds-p-horizontal_small">Trail Points: {trailScore}</p>
+        <p class="slds-p-horizontal_small">Modules: {modules}</p>
         <div slot="footer">
-            <template if:true={progress}>
-                <p>Trail Progress {progress}%</p>
-                <lightning-progress-bar value={progress} size="large" variant="circular"></lightning-progress-bar>
-            </template>
-            <template if:false={progress}>
-                <template if:false={moduleStarted}>
+            <template if:false={trailCompleted}>
+                <template if:true={progressTrail}>
+                    <p>Trail Progress {progressTrail}%</p>
+                    <lightning-progress-bar value={progressTrail} size="large" variant="circular"></lightning-progress-bar>
+                </template>
+                <template if:false={progressTrail}>
                     <p class="slds-p-horizontal_small">Trail Not Started!</p>
-                </template>
-                <template if:true={moduleStarted}>
-                    <p class="slds-p-horizontal_small">Trail Completed!</p>
-                </template>
+                </template>    
+            </template>                          
+            <template if:true={trialCompleted}>
+                <p class="slds-p-horizontal_small">Trail Completed!</p>
             </template>
        </div>                 
     </lightning-card>

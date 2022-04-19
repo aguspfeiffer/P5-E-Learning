@@ -1,21 +1,39 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getSObjectValue } from '@salesforce/apex';
-import NAME_FIELD from '@salesforce/schema/Trail__c.Name';
-import DESCRIPTION_FIELD from '@salesforce/schema/Trail__c.Description__c';
-import TRAILTIME_FIELD from '@salesforce/schema/Trail__c.Trail_Time__c';
-import TRAILSCORE_FIELD from '@salesforce/schema/Trail__c.Trail_Score__c'; 
 import getTrail from '@salesforce/apex/TrailController.getTrail';
-import getTrailProgress from '@salesforce/apex/TrailController.getTrailProgress';
 
 
 export default class TrailView extends LightningElement {
-    
+    trailName;
+    trailDescription;
+    trailTime;
+    trailScore;
+    trailCompleted;
+    progressTrail;
+    modules;
+
   @api recordId;
-
   @wire(getTrail, {trailId : '$recordId'})
-  trail;        
-
-    get name() {
+  trail({data, error}){
+      if(data){
+          console.log('DATA--> ',data)
+         
+        this.trailName = data.trail.Name;
+        this.trailDescription = data.trail.Description__c;
+        this.trailTime = data.trail.Trail_Time__c;
+        this.trailScore = data.trail.Trail_Score__c;
+        if(data.progressTrail) {this.progressTrail = data.progressTrail};
+        if(data.progressTrail == 100) {this.trailCompleted = true};
+        console.log('trailompleted--> ',this.trailCompleted)
+        console.log('datamodule--> ',data.modules)
+        this.modules = data.modules;
+        
+      } else if(error) {
+          console.log('entramos en error', error)
+      }
+  }    
+ 
+  //>>>>>>>>>>>>>>>>>METODOS GETTERS UTILIZANDO EL .TRAIL en EL TRAILCONTROLLER<<<<<<<<<<<<<<<<<<<<
+    /* get name() {
     return this.trail.data? getSObjectValue(this.trail.data, NAME_FIELD) : '';
     } 
 
@@ -29,9 +47,11 @@ export default class TrailView extends LightningElement {
 
     get trailScore() {
         return this.trail.data ? getSObjectValue(this.trail.data, TRAILSCORE_FIELD) : '';
-    }
+    } */
 
-    @wire(getTrailProgress, {trailId : '$recordId'})
+
+    //>>>>>>>>>>>>>>>>>>>>>TRAIL PROGRESS<<<<<<<<<<<<<<<<<<<<<<<
+  /*   @wire(getTrailProgress, {trailId : '$recordId'})
     trailProgress;  
 
    get progress(){
@@ -39,11 +59,5 @@ export default class TrailView extends LightningElement {
         return this.trailProgress.data;   
    }
 
-   get moduleStarted() {
-    if(this.trailProgress.data==0){
-        return false;
-        } else if(this.trailProgress.data==100){
-        return true;
-        }
-    }
+ */
 }   

@@ -58,8 +58,6 @@ public class UnitService{
         }
 
     }
-
-
     //>>>>>>>>>>>>>>>>>> CLASS TRAIL WRAPPER  !!<<<<<<<<<<<<<<<<<<<
     public class TrailWrapper{
         //Configuration
@@ -69,32 +67,37 @@ public class UnitService{
         public List<Module__c> modules;
         
         //Transactional
-        public Set<Id> passedModuleIds;
-        public Set<Id> passedUnitIds;
+        @AuraEnabled
+        public List<Id> passedModuleIds;
+        @AuraEnabled
+        public List<Id> passedUnitIds;
         @AuraEnabled
         public Double progressTrail;
+        @AuraEnabled
+        public List<ModuleWrapper> modulesWrapps;
 
          //CONSTRUCTOR!
-        public TrailWrapper(Trail__c trail, List<Module__c> modules, Set<Id> passedModuleIds, Set<Id> passedUnitIds){
+        public TrailWrapper(Trail__c trail, List<Module__c> modules, List<Id> passedModuleIds, List<Id> passedUnitIds, List<ModuleWrapper> modulesWrapps){
             this.trail = trail;
             this.modules = modules;
             this.passedModuleIds = passedModuleIds;
             this.passedUnitIds = passedUnitIds;
             this.progressTrail = (Double) passedModuleIds.size()*100 /  (Double) modules.size();
+            this.modulesWrapps = modulesWrapps;
         }
     }
 
     //------------------------ METHODS------------------------
-    //___________________PUBLIC___________________
+    //________PUBLIC__________
 
     public TrailWrapper getTrailWrapper(Id trailId){
             //New Instance of TrailWrapper
-            TrailWrapper trailWrap = new TrailWrapper([SELECT Name, Description__c, Trail_Time__c, Trail_Score__c FROM Trail__c WHERE Id =: trailId], getModules(trailId), getModuleIdsCompleted(trailId), getUnitIdsCompleted(trailId));
+            TrailWrapper trailWrap = new TrailWrapper([SELECT Name, Description__c, Trail_Time__c, Trail_Score__c FROM Trail__c WHERE Id =: trailId], getModules(trailId), getModuleIdsCompleted(trailId), getUnitIdsCompleted(trailId), getModuleWrapper(trailId));
     
             return trailWrap;
         }
     
-    //___________________PRIVATE___________________
+    //________PRIVATE_________
         private List<Module__c> getModules(Id trailId){
             //Search related modules
             List<Trail_Module__c> trailModules = [SELECT Module__c FROM Trail_Module__c WHERE Trail__c =: trailId];
@@ -103,29 +106,62 @@ public class UnitService{
             for(Trail_Module__c trailModule : trailModules){
                 moduleIds.add(trailModule.Module__c);
             }
-            return [SELECT Name, (SELECT Name FROM Units__r) FROM Module__c WHERE Id in : moduleIds];
+            return [SELECT Name, Module_Time_Estimate__c, Module_Score__c, (SELECT Name FROM Units__r) FROM Module__c WHERE Id in : moduleIds];
         }
     
-        private Set<Id> getModuleIdsCompleted(Id trailId){
+        private List<Id> getModuleIdsCompleted(Id trailId){
             List<Student_Module__c> moduleResponses = [SELECT Module__c FROM Student_Module__c WHERE Status__c = 'Completed' AND Module__c IN : getModules(trailId) AND User__c =: Userinfo.getUserId()];
             Set<Id> completedModuleIds = new Set<Id>();
             for(Student_Module__c moduleResp : moduleResponses){
                 completedModuleIds.add(moduleResp.Module__c);
             }
     
-            return completedModuleIds;
+            return new List<Id>(completedModuleIds);
         }
-        private Set<Id> getUnitIdsCompleted(Id trailId){
+        private List<Id> getUnitIdsCompleted(Id trailId){
             List<Unit_Response__c> unitResponses = [SELECT Unit__c FROM Unit_Response__c WHERE IsCompleted__c = true AND UserID__c =: Userinfo.getUserId() AND Unit__r.Module__c IN : getModules(trailId)];
             Set<Id> completedUnitIds = new Set<Id>();
             for(Unit_Response__c unitResp : unitResponses){
                 completedUnitIds.add(unitResp.Unit__c);
             }
     
-            return completedUnitIds;    
+            return new List<Id>(completedUnitIds);    
         }
-
     
+    //>>>>>>>>>>>>>>>>>>>> CLASS MODULE WRAPPER <<<<<<<<<<<<<<<<<<<<
+    public class ModuleWrapper{
+        //Variables
+        @AuraEnabled
+        public Module__c module;
+        @AuraEnabled
+        public Boolean isCompleted; 
+        
+        //CONSTRUCTOR
+        public ModuleWrapper(Module__c module ,Boolean status){
+            this.module = module;
+            this.isCompleted = status;
+        }
+    }
+
+    //------------------------ METHODS------------------------
+     //________PUBLIC__________
+    public List<ModuleWrapper> getModuleWrapper(Id trailId){
+
+        List<Module__c> modules = [SELECT Id, Name, Module_Time_Estimate__c, Module_Score__c,(SELECT Status__c FROM Students_Modules__r WHERE User__c =: Userinfo.getUserId())  FROM Module__c WHERE Id IN :getModules (trailId)];
+
+        List<ModuleWrapper> moduleWrapperList = new List<ModuleWrapper>();
+        for(Module__c mod : modules){
+            if(mod.Students_Modules__r.size()>0){
+                if(mod.Students_Modules__r[0].Status__c=='Completed'){
+                    moduleWrapperList.add(new ModuleWrapper(mod,true));
+                }      
+             } else {
+                moduleWrapperList.add(new ModuleWrapper(mod,false));
+            } 
+        } 
+        return moduleWrapperList;
+    }
+
     //>>>>>>>>>>>>>>>>>>>> CLASS UNIT WRAPPER  !!<<<<<<<<<<<<<<<<<<<
     public class UnitWrapper{
         //Variables
@@ -141,7 +177,7 @@ public class UnitService{
 
 
     //------------------------ METHODS------------------------
-    //___________________PUBLIC___________________
+     //________PUBLIC__________
     public UnitWrapper getUnitWrapper(Id unitID){
 
         Unit__c unit = [SELECT Id, Name, Content__c, Time_Estimate__c, Unit_Score__c, Challenge_Type__c FROM Unit__c WHERE Id = :unitID];
@@ -151,3 +187,4 @@ public class UnitService{
         return new UnitWrapper(unit, listQuestions);
     }
 }
+

@@ -1,13 +1,14 @@
 <template>
+                                             <!-- TRAIL CARD  -->
     <lightning-card>
         <h3 slot="title">
-            <lightning-icon icon-name="standard:knowledge" size="small"></lightning-icon>
-             {trailName}
+            <lightning-icon icon-name="standard:knowledge" size="small"></lightning-icon>&nbsp;
+             {trailName}&emsp;
+             <lightning-icon if:true={trailCompleted} icon-name="utility:success" variant="Success" size="medium (default)"></lightning-icon>
         </h3>
         <p class="slds-p-horizontal_small">Description: {trailDescription}</p>
         <p class="slds-p-horizontal_small">Estimated Time: {trailTime} minutes</p>
         <p class="slds-p-horizontal_small">Trail Points: {trailScore}</p>
-        <p class="slds-p-horizontal_small">Modules: {modules}</p>
         <div slot="footer">
             <template if:false={trailCompleted}>
                 <template if:true={progressTrail}>
@@ -18,9 +19,32 @@
                     <p class="slds-p-horizontal_small">Trail Not Started!</p>
                 </template>    
             </template>                          
-            <template if:true={trialCompleted}>
+            <template if:true={trailCompleted}>
                 <p class="slds-p-horizontal_small">Trail Completed!</p>
             </template>
        </div>                 
+    </lightning-card>
+                                            <!-- MODULES CARDS -->
+    <lightning-card>
+    <h3 slot="title" style="display: inline-block; text-align : center; margin: 0 auto">
+        <lightning-icon icon-name="standard:app" size="small"></lightning-icon>&nbsp;
+        MODULES 
+    </h3>
+    <div if:true = {modulesWrapps}>
+        <template for:each={modulesWrapps} for:item="moduleWrapp">
+            <div key = {moduleWrapp.module.Id}>
+                <lightning-card>
+                    <h3 slot="title">
+                        <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>
+                        {moduleWrapp.module.Name}&emsp;
+                        <lightning-icon if:true={moduleWrapp.isCompleted} icon-name="utility:success" variant="Success" size="medium (default)"></lightning-icon>
+                    </h3>
+                    <p class="slds-p-horizontal_small">Total Module Time: {moduleWrapp.module.Module_Time_Estimate__c} minutes</p>
+                    <p class="slds-p-horizontal_small">Total Module Score: {moduleWrapp.module.Module_Score__c}</p>
+                    <p class="slds-p-horizontal_small">Module Completed: {moduleWrapp.isCompleted}</p>
+                </lightning-card>
+            </div>
+        </template>  
+    </div>
     </lightning-card>
 </template>
